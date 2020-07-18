@@ -4,9 +4,9 @@ Hoje irei falar sobre monitoramento e como o Prometheus me ajudou com isso, mesm
 
 Minha história começou a mudar quando eu conheci o Prometheus, no começo achei ele extremamente difícil de usar e desisti várias vezes, mais chegou um dia que não dava mais para correr e a falta de visão das métricas do meu cluster ficaram insustentáveis.
 
-Foi quando, por acaso, eu achei um projeto público no Github que brilhou meus olhos e ele estava bem completinho porem tive que fazer vários ajustes para funcionar da forma que eu queria [PROJETO-ORIGINAL](https://github.com/do-community/doks-monitoring)
+Foi quando, por acaso, eu achei um projeto público no Github que brilhou meus olhos e ele estava bem completo porem tive que fazer vários ajustes para funcionar da forma que eu queria [PROJETO-ORIGINAL](https://github.com/do-community/doks-monitoring).
 
-A ideia desde médium não é ensinar o que é o Prometheus, para tais informações eu super recomento a [DOCUMENTAÇÃO](https://prometheus.io/docs/introduction/overview/) dele, mostrar de forma simples, como implantar uma stack pronta para usar que vai te oferecer dashboards automáticos e alerta configurado.
+A ideia desde médium não é ensinar o que é o Prometheus, para tais informações eu recomendo a [DOCUMENTAÇÃO](https://prometheus.io/docs/introduction/overview/)a ideia é mostrar de forma simples, como implantar uma stack pronta para usar que vai te oferecer dashboards automáticos e alerta configuravel.
 
 ## Pré-requisitos
 
@@ -16,7 +16,7 @@ A ideia desde médium não é ensinar o que é o Prometheus, para tais informaç
 
 ## Ajustes necessários
 
-Como eu não conheço seu ambiente recomento que você faça alguns ajustes antes de executar o projeto:
+Como eu não conheço seu ambiente recomendo que você faça alguns ajustes antes de executar o projeto:
 
 - Ajustar o 'PersistentVolume' para ficar de acordo com o seu ambiente.
 ```
@@ -25,7 +25,7 @@ prometheus/alertmananager-volumes.yml
 grafana/grafana-volumes.yml
 ```
 
-- Ajustar o 'Services' no meu caso eu recomendo mudar os dois services abaixo para o tipo loadbalancer os demais podem ficar como clusterIP
+- Ajustar o 'Services', no meu caso eu recomendo mudar os dois services abaixo para o tipo loadbalancer os demais podem ficar como clusterIP
 ```
 prometheus/prometheus-service.yml
 grafana/grafana-service.yml
@@ -33,7 +33,7 @@ grafana/grafana-service.yml
 
 ## Guia de configuração
 
-Nesta parte vou testar os arquivos mais importantes para manutenção da stack e adaptação dela para o seu ambiente, todos os arquivos de configuração do Prometheus, Alertmanager e Grafana foram adaptados para os configmaps facilitando a manutenção dos mesmos.
+Nesta parte vou mostrar os arquivos mais importantes para manutenção da stack e adaptação dela para o seu ambiente, todos os arquivos de configuração do Prometheus, Alertmanager e Grafana foram adaptados para os configmaps facilitando a manutenção dos mesmos.
 
 - No 'prometheus-configmap.yml' esta todas as configurações do prometheus.yml,rules.yml e alerts.yml porem o que mais será alterado vai ser o alerts.yml por que é nele que fica a configuração dos alertas
 
