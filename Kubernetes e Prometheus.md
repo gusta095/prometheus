@@ -6,7 +6,7 @@ Minha história começou a mudar quando eu conheci o Prometheus, no começo ache
 
 Foi quando, por acaso, eu achei um projeto público no Github que brilhou meus olhos e ele estava bem completinho porem tive que fazer vários ajustes para funcionar da forma que eu queria [PROJETO-ORIGINAL](https://github.com/do-community/doks-monitoring)
 
-A ideia desde médium não é ensinar o que é o Prometheus, para tais informações eu super recomento a [DOCUMENTAÇÃO](https://prometheus.io/docs/introduction/overview/) dele, mais sim mostrar de forma simples como implantar uma stack pronta para usar que vai te oferecer dashboards automáticos e alerta configurado.
+A ideia desde médium não é ensinar o que é o Prometheus, para tais informações eu super recomento a [DOCUMENTAÇÃO](https://prometheus.io/docs/introduction/overview/) dele, mostrar de forma simples, como implantar uma stack pronta para usar que vai te oferecer dashboards automáticos e alerta configurado.
 
 ## Pré-requisitos
 
