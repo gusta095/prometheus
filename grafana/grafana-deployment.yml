@@ -1,0 +1,155 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monitoramento-grafana
+  namespace: prometheus
+  labels: &Labels
+    k8s-app: grafana
+    app.kubernetes.io/name: monitoramento
+    app.kubernetes.io/component: grafana
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: grafana
+    spec:
+      serviceAccountName: grafana
+      initContainers:
+          - name: "init-chmod-data"
+            image: debian:9
+            imagePullPolicy: "IfNotPresent"
+            command: ["chmod", "777", "/var/lib/grafana"]
+            volumeMounts:
+            - name: monitoramento-grafana-data
+              mountPath: "/var/lib/grafana"
+      containers:
+      - env:
+        - name: TZ
+          value: America/Sao_Paulo
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-kubernetes-app"
+        # image: grafana/grafana:6.0.1
+        image: grafana/grafana:7.0.3-ubuntu
+        imagePullPolicy: Always
+        name: monitoramento-grafana
+        ports:
+        - containerPort: 80
+          name: service
+          protocol: TCP
+        - containerPort: 3000
+          name: grafana
+          protocol: TCP
+        securityContext:
+          capabilities: {}
+          privileged: true
+        # resources:
+        #   limits:
+        #     cpu: 50m
+        #     memory: 100MI
+        #   requests:
+        #     cpu: 50m
+        #     memory: 100MI
+        volumeMounts:
+          - name: config
+            mountPath: "/etc/grafana/"
+          - name: dashboards
+            mountPath: "/var/lib/grafana/dashboards"
+          - name: datasources
+            mountPath: "/etc/grafana/provisioning/datasources/"
+          - name: dashboardproviders
+            mountPath: "/etc/grafana/provisioning/dashboards/"
+          - name: monitoramento-grafana-data
+            mountPath: "/var/lib/grafana"
+      dnsPolicy: ClusterFirst
+      # nodeSelector:
+      #   node_profile: nodes-spot-v1
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 90
+      volumes:
+        - name: config
+          configMap:
+            name: monitoramento-grafana-ini
+        - name: datasources
+          configMap:
+            name: monitoramento-grafana-datasources
+        - name: dashboardproviders
+          configMap:
+            name: monitoramento-grafana-dashboardproviders
+        - name: dashboards
+          configMap:
+            name: monitoramento-dashboards
+        - name: monitoramento-grafana-data
+          persistentVolumeClaim:
+            claimName: grafrana-pvc-v1
+
+### Versão sem dashboard
+
+# - apagar dashboards-configmap.yml
+
+
+# apiVersion: extensions/v1beta1
+# kind: Deployment
+# metadata:
+#   name: monitoramento-grafana
+#   namespace: prometheus
+# spec:
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         k8s-app: grafana
+#         app.kubernetes.io/name: monitoramento
+#         app.kubernetes.io/component: grafana
+#     spec:
+#       serviceAccountName: grafana
+#       initContainers:
+#           - name: "init-chmod-data"
+#             image: debian:9
+#             imagePullPolicy: "IfNotPresent"
+#             command: ["chmod", "777", "/var/lib/grafana"]
+#             volumeMounts:
+#             - name: monitoramento-grafana-data
+#               mountPath: "/var/lib/grafana"
+#       containers:
+#       - env:
+#         - name: TZ
+#           value: America/Sao_Paulo
+#         # - name: GF_INSTALL_PLUGINS
+#         #   value: "grafana-kubernetes-app"
+#         image: grafana/grafana:7.0.3-ubuntu
+#         imagePullPolicy: Always
+#         name: monitoramento-grafana
+#         ports:
+#         - containerPort: 3000
+#           name: port-default
+#           protocol: TCP
+#         securityContext:
+#           capabilities: {}
+#           privileged: true
+#         # resources:
+#         #     limits:
+#         #       cpu: 500m
+#         #       memory: 500MI
+#         #     requests:
+#         #       cpu: 500m
+#         #       memory: 500MI
+#         volumeMounts:
+#           - name: datasources
+#             mountPath: "/etc/grafana/provisioning/datasources/"
+#           - name: monitoramento-grafana-data
+#             mountPath: /var/lib/grafana
+#       dnsPolicy: ClusterFirst
+#       nodeSelector:
+#         node_profile: nodes-spot-v1
+#       restartPolicy: Always
+#       schedulerName: default-scheduler
+#       terminationGracePeriodSeconds: 90
+#       volumes:
+#         - name: datasources
+#           configMap:
+#             name: monitoramento-grafana-datasources
+#         - name: monitoramento-grafana-data
+#           persistentVolumeClaim:
+#             claimName: grafrana-pvc-v1

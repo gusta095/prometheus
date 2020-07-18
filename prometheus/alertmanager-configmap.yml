@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoramento-alertmanager-config
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: monitoramento
+    app.kubernetes.io/component: alertmanager
+data:
+  # To learn more: https://prometheus.io/docs/alerting/configuration/
+  alertmanager.yml: |
+    global: null
+
+    route:
+      group_interval: 5m
+      group_wait: 10s
+      receiver: default-receiver
+      repeat_interval: 1m
+
+    receivers:
+    - name: default-receiver
+      slack_configs:
+      - send_resolved: true
+        channel: '#nome-do-grupo'
+        icon_url: https://avatars3.githubusercontent.com/u/3380462
+        text: "\nWARNING: {{ .CommonAnnotations.summary }}\nDESCRIPTION: {{ .CommonAnnotations.description }}"
+        api_url: https://URL-DO-SLACK
+
+    templates:
+    - '/etc/alertmanager/template/*.tmpl'
+

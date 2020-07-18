@@ -1,0 +1,23 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: prometheus
+  name: prometheus-pvc-v1
+spec:
+  storageClassName: prometheus-db-class-v1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  namespace: prometheus
+  name: prometheus-db-class-v1
+provisioner: kubernetes.io/gce-pd
+reclaimPolicy: Retain
+parameters:
+  type: pd-standard
+  replication-type: none

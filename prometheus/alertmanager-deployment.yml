@@ -1,0 +1,212 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monitoramento-alertmanager
+  namespace: prometheus
+  labels: &Labels
+    k8s-app: alertmanager
+    app.kubernetes.io/name: monitoramento
+    app.kubernetes.io/component: alertmanager
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: alertmanager
+    spec:
+      serviceAccountName: "alertmanager"
+      containers:
+      - env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        image: quay.io/prometheus/alertmanager:v0.21.0
+        imagePullPolicy: Always
+        name: prometheus-alertmanager
+        args:
+          - --config.file=/etc/config/alertmanager.yml
+          - --storage.path=/data
+          - --web.listen-address=:9093
+          - --web.route-prefix=/
+          # - --cluster.listen-address=$(POD_IP):6783
+          # - --cluster.peer=monitoramento-alertmanager-0.monitoramento-alertmanager-operated.prometheus.svc:6783
+          # - --cluster.peer=monitoramento-alertmanager-1.monitoramento-alertmanager-operated.prometheus.svc:6783
+          - --log.level=debug
+        ports:
+          - containerPort: 9093
+            name: http
+            protocol: TCP
+          - containerPort: 6783
+            name: mesh
+            protocol: TCP
+        securityContext:
+          capabilities: {}
+          privileged: true
+        readinessProbe:
+          httpGet:
+            path: /#/status
+            port: 9093
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/config
+          - name: monitoramento-alertmanager-data
+            mountPath: "/data"
+            subPath: ""
+        # resources:
+        #   limits:
+        #     cpu: 300m
+        #     memory: 300MI
+        #   requests:
+        #     cpu: 300m
+        #     memory: 300MI
+      dnsPolicy: ClusterFirst
+      # nodeSelector:
+      #   node_profile: nodes-spot-v1
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 90
+      volumes:
+        - name: config-volume
+          configMap:
+            name: monitoramento-alertmanager-config
+        - name: monitoramento-alertmanager-data
+          persistentVolumeClaim:
+            claimName: alertmanager-pvc-v1
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: k8s-app
+                    operator: In
+                    values:
+                      - alertmanager
+              topologyKey: "kubernetes.io/hostname"
+
+# ---
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   namespace: prometheus
+#   name: alertmanager-pvc-v1
+# spec:
+#   storageClassName: alertmanager-db-class-v1
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 5Gi
+# ---
+# kind: StorageClass
+# apiVersion: storage.k8s.io/v1
+# metadata:
+#   namespace: prometheus
+#   name: alertmanager-db-class-v1
+# provisioner: kubernetes.io/gce-pd
+# reclaimPolicy: Retain
+# parameters:
+#   type: pd-standard
+#   replication-type: none
+
+
+#### Antigo ####
+
+# apiVersion: apps/v1
+# kind: StatefulSet
+# metadata:
+#   name: monitoramento-alertmanager
+#   namespace: prometheus
+#   labels: &Labels
+#     k8s-app: alertmanager
+#     app.kubernetes.io/name: monitoramento
+#     app.kubernetes.io/component: alertmanager
+# spec:
+#   serviceName: "monitoramento-alertmanager-operated"
+#   replicas: 2
+#   podManagementPolicy: OrderedReady
+#   updateStrategy:
+#     type: RollingUpdate
+#   revisionHistoryLimit: 10
+#   selector:
+#     matchLabels: *Labels
+#   template:
+#     metadata:
+#       labels: *Labels
+#     spec:
+#       nodeSelector:
+#         node_profile: nodes-spot-v1
+#       serviceAccountName: alertmanager
+#       containers:
+#         - name: prometheus-alertmanager
+#           # The Alertmanager container image
+#           image: quay.io/prometheus/alertmanager:v0.21.0
+#           imagePullPolicy: Always
+#           args:
+#             - --config.file=/etc/config/alertmanager.yml
+#             - --storage.path=/data
+#             - --web.listen-address=:9093
+#             - --web.route-prefix=/
+#             - --cluster.listen-address=$(POD_IP):6783
+#             - --cluster.peer=monitoramento-alertmanager-0.monitoramento-alertmanager-operated.prometheus.svc:6783
+#             - --cluster.peer=monitoramento-alertmanager-1.monitoramento-alertmanager-operated.prometheus.svc:6783
+#             - --log.level=debug
+#           env:
+#           - name: POD_IP
+#             valueFrom:
+#               fieldRef:
+#                 apiVersion: v1
+#                 fieldPath: status.podIP
+#           ports:
+#             # Configured for web access
+#             - containerPort: 9093
+#               name: http
+#             # Configured for communication over the mesh
+#             - containerPort: 6783
+#               name: mesh
+#           readinessProbe:
+#             httpGet:
+#               path: /#/status
+#               port: 9093
+#             initialDelaySeconds: 30
+#             timeoutSeconds: 30
+#           volumeMounts:
+#             - name: config-volume
+#               mountPath: /etc/config
+#             - name: monitoramento-alertmanager-data
+#               mountPath: "/data"
+#               subPath: ""
+#           resources:
+#             limits:
+#               cpu: 10m
+#               memory: 50Mi
+#             requests:
+#               cpu: 10m
+#               memory: 50Mi
+#       volumes:
+#         - name: config-volume
+#           configMap:
+#             name: monitoramento-alertmanager-config
+#       affinity:
+#         podAntiAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#           - labelSelector:
+#               matchExpressions:
+#               - key: k8s-app
+#                 operator: In
+#                 values:
+#                 - alertmanager
+#             topologyKey: "kubernetes.io/hostname"
+#   volumeClaimTemplates:
+#   - metadata:
+#       name: monitoramento-alertmanager-data
+#     spec:
+#       storageClassName: alertmanager-db-class-v1
+#       accessModes:
+#         - ReadWriteOnce
+#       resources:
+#         requests:
+#           storage: "2Gi"
