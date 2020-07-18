@@ -1,6 +1,6 @@
 # Kubernetes e Prometheus
 
-Hoje irei falar sobre monitoramento e como o Prometheus me ajudou com isso, mesmo em um cluster considerado pequeno quando não se tem um certo nível de observabilidade fica difícil saber qual a saúde do cluster e se está tudo bem.
+Hoje irei falar sobre monitoramento e como o Prometheus me ajudou com isso, mesmo em um cluster considerado pequeno quando não se tem um certo nível de observabilidade fica difícil saber qual a saúde do cluster.
 
 Minha história começou a mudar quando eu conheci o Prometheus, no começo achei ele extremamente difícil de usar e desisti várias vezes, mais chegou um dia que não dava mais para correr e a falta de visão das métricas do meu cluster ficaram insustentáveis.
 
