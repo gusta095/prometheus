@@ -62,4 +62,4 @@ kubectl port-forward --namespace prometheus monitoramento-grafana-${ID-K8S} 3000
 
 ## Conclusão
 
-Eu sinceramente espero que caso, você esteja precisando de uma stack de monitoramento  ou simplesmente deseje estudar sobre o Prometheus que este projete te ajude.
+Eu sinceramente espero que caso, você esteja precisando de uma stack de monitoramento  ou simplesmente deseje estudar sobre o Prometheus que este projeto te ajude.
