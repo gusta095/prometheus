@@ -35,11 +35,11 @@ grafana/grafana-service.yml
 
 Nesta parte vou mostrar os arquivos mais importantes para manutenção da stack e adaptação dela para o seu ambiente, todos os arquivos de configuração do Prometheus, Alertmanager e Grafana foram adaptados para os configmaps facilitando a manutenção dos mesmos.
 
-- No 'prometheus-configmap.yml' esta todas as configurações do prometheus.yml,rules.yml e alerts.yml porem o que mais será alterado vai ser o alerts.yml por que é nele que fica a configuração dos alertas
+- No 'prometheus-configmap.yml', estão todas as configurações do prometheus.yml,rules.yml e alerts.yml, porem o que mais será alterado vai ser o alerts.yml porque é nele que fica a configuração dos alertas:
 
-- O 'alertmanager-configmap.yml' já é mais simples nele será configurado o meio de comunicação do alerta no meu caso eu usava o slack.
+- O 'alertmanager-configmap.yml' já é mais simples, nele será configurado o meio de comunicação do alerta no meu caso eu usava o slack:
 
-- Por ultimo o 'dashboards-configmap.yml' todos os dashboards estão salvos como arquivos json, e caso queira colocar seus próprios dashboard só siga o padrão que ira funcionar.
+- Por ultimo o 'dashboards-configmap.yml' todos os dashboards estão salvos como arquivos json, e caso queira colocar seus próprios dashboard só siga o padrão que ira funcionar:
 
 ## Instalação
 
@@ -53,7 +53,7 @@ kubectl apply -f prometheus/
 kubectl apply -f grafana/
 ```
 
-- caso tenha mantido os services como clusterIP
+- caso tenha mantido os services como clusterIP:
 ```
 kubectl port-forward --namespace prometheus monitoramento-prometheus-${ID-K8S} 9090
 kubectl port-forward --namespace prometheus monitoramento-grafana-${ID-K8S} 3000
@@ -62,4 +62,4 @@ kubectl port-forward --namespace prometheus monitoramento-grafana-${ID-K8S} 3000
 
 ## Conclusão
 
-Eu sinceramente espero que caso, você esteja precisando de uma stack de monitoramento  ou simplesmente deseje estudar sobre o Prometheus que este projeto te ajude.
+Eu sinceramente espero que, caso você esteja precisando de uma stack de monitoramento  ou simplesmente deseje estudar sobre o Prometheus que este projeto te ajude.
