@@ -46,7 +46,7 @@ Nesta parte vou mostrar os arquivos mais importantes para manutenção da stack 
 [REPOSITÓRIO](https://github.com/gusta095/prometheus)
 
 ```
-git clone
+git clone https://github.com/gusta095/prometheus.git
 cd prometheus
 kubectl create namespace promethues
 kubectl apply -f prometheus/
