@@ -1,4 +1,5 @@
-# Kubernetes e Prometheus
+# Monitorar o kubernetes com Prometheus
+### Monitorando um cluster de Kubernetes com o Prometheus e Grafana.
 
 Hoje irei falar sobre monitoramento e como o Prometheus me ajudou com isso, mesmo em um cluster considerado pequeno quando não se tem um certo nível de observabilidade fica difícil saber qual a saúde do cluster.
 
